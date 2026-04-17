@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tomato Thrower</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-color: white;
+      font-family: sans-serif;
+      cursor: crosshair;
+    }
+
+    #controls {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.6);
+      padding: 10px;
+      border-radius: 10px;
+      color: white;
+    }
+
+    .tomato {
+      position: absolute;
+      width: 500px;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+<body>
+
+<div id="controls">
+  <input type="file" id="imageInput" accept="image/*">
+</div>
+
+<script>
+  const input = document.getElementById('imageInput');
+  const body = document.body;
+
+  input.addEventListener('change', function () {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        body.style.backgroundImage = `url('${e.target.result}')`;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  function spawnTomato(x, y) {
+    const tomato = document.createElement('img');
+
+    tomato.src = 'tomato.gif?t=' + Date.now();
+    tomato.className = 'tomato';
+    tomato.style.left = x + 'px';
+    tomato.style.top = y + 'px';
+
+    document.body.appendChild(tomato);
+
+    setTimeout(() => {
+      tomato.remove();
+    }, 7000);
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('#controls')) {
+      spawnTomato(e.clientX, e.clientY);
+    }
+  });
+</script>
+</body>
+</html>
